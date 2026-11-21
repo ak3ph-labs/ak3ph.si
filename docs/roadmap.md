@@ -12,8 +12,8 @@
 - [x] Base layout, header, nav, footer, design tokens (nav leaves out `how` until that page exists)
 - [x] Index with the Excalidraw (`monitorId: 1`) and Uptime Kuma entries (short bodies; Excalidraw is the first entry, moved here from labs)
 - [x] Dockerfile + Caddyfile (serve `dist/`, `www` → apex redirect)
-- [ ] Railway service `index` in `ak3ph-selfhosted`, capped at 0.5 vCPU / 512 MB, connected to `main`
-- [ ] Custom domains `ak3ph.si` and `www.ak3ph.si`; CNAME + TXT on Cloudflare (grey cloud); HTTPS valid
+- [x] Railway service in `ak3ph-selfhosted` (named `ak3ph.si`, private hostname `index`), capped at 0.5 vCPU / 512 MB, connected to `main`
+- [x] Custom domains `ak3ph.si` and `www.ak3ph.si`; CNAME + TXT on Cloudflare (now proxied, SSL Full (strict), Rocket Loader and Email Obfuscation off); HTTPS valid
 - [ ] Uptime Kuma monitor "Index (ak3ph.si)" added to the status page
 
 ## Milestone 2: pages and status
