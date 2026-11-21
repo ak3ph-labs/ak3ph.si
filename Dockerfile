@@ -6,6 +6,9 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
 COPY . .
+# Read-only token for GitHub stats. Railway passes service variables as build
+# args; it stays in this stage and never reaches the final image.
+ARG GITHUB_TOKEN
 RUN npm run build
 
 # 2. Serve dist/ with Caddy.
