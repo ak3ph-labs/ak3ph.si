@@ -8,6 +8,15 @@ Source for [ak3ph.si](https://ak3ph.si): an index of the open-source tools ak3ph
 
 Built with Astro, served as static files by Caddy on Railway. Each entry is one MDX file in `src/content/entries/`. See `CLAUDE.md` and `docs/` for how the site works.
 
+## Develop
+
+```sh
+npm ci
+npm run dev     # http://localhost:4321
+npm run build   # static output in dist/; fails on an invalid entry
+npm run check   # type check
+```
+
 ## License
 
 Site code is MIT-licensed (see `LICENSE`). Each listed tool keeps its own license; see its entry.
