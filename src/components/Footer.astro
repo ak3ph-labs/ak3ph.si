@@ -1,0 +1,39 @@
+---
+import ExtLink from './ExtLink.astro';
+---
+
+<footer class="site-footer">
+  <div class="container mono">
+    <p>
+      <ExtLink href="https://github.com/ak3ph-labs/ak3ph.si">Site source</ExtLink> is MIT.
+      Each listed tool keeps its own license.
+    </p>
+    <p>
+      <ExtLink href="https://status.ak3ph.si">status.ak3ph.si</ExtLink>{' · '}
+      <ExtLink href="https://labs.ak3ph.dev">labs.ak3ph.dev</ExtLink>{' · '}
+      <ExtLink href="https://ak3ph.dev">ak3ph.dev</ExtLink>
+    </p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    border-top: 1px solid var(--border);
+    margin-top: 4rem;
+    padding-block: 1.5rem;
+    color: var(--muted);
+    font-size: 0.8125rem;
+  }
+  p {
+    margin: 0.25rem 0;
+  }
+  a {
+    color: var(--muted);
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-underline-offset: 3px;
+  }
+  a:hover {
+    color: var(--accent-hover);
+  }
+</style>

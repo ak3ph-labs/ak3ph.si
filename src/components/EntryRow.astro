@@ -1,0 +1,108 @@
+---
+import ExtLink from './ExtLink.astro';
+import { hostname, type Entry } from '../lib/entries';
+
+interface Props {
+  entry: Entry;
+}
+
+const { data } = Astro.props.entry;
+const github = (repo: string) => `https://github.com/${repo}`;
+---
+
+<li class="row">
+  <div class="head">
+    <span class="status mono" data-status={data.status}>{data.status}</span>
+    <h3 class="title">{data.title}</h3>
+    {
+      data.url && (
+        <ExtLink class="host mono" href={data.url}>
+          {hostname(data.url)}
+        </ExtLink>
+      )
+    }
+  </div>
+  <p class="summary">{data.summary}</p>
+  <p class="meta mono">
+    <span>{data.category}</span>
+    {
+      data.upstream && (
+        <span>
+          upstream <ExtLink href={github(data.upstream)}>{data.upstream}</ExtLink>
+        </span>
+      )
+    }
+    {
+      data.repo && data.repo !== data.upstream && (
+        <span>
+          {data.upstream ? 'fork' : 'repo'} <ExtLink href={github(data.repo)}>{data.repo}</ExtLink>
+        </span>
+      )
+    }
+    {data.license && <span>{data.license}</span>}
+  </p>
+</li>
+
+<style>
+  .row {
+    padding: 0.875rem 1rem;
+    border-top: 1px solid var(--border);
+  }
+  .row:first-child {
+    border-top: 0;
+  }
+  .head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.25rem 0.75rem;
+  }
+  .status {
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .status::before {
+    content: '[';
+  }
+  .status::after {
+    content: ']';
+  }
+  .title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .host {
+    font-size: 0.875rem;
+  }
+  .summary {
+    margin: 0.25rem 0 0;
+    font-size: 0.9375rem;
+  }
+  .meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0 1rem;
+    margin: 0.25rem 0 0;
+    font-size: 0.75rem;
+    color: var(--muted);
+  }
+  .meta a {
+    color: var(--muted);
+    text-decoration: underline;
+    text-decoration-color: var(--border);
+    text-underline-offset: 3px;
+  }
+  .meta a:hover {
+    color: var(--accent-hover);
+  }
+  @media (min-width: 40rem) {
+    .status {
+      min-width: 5.5rem;
+    }
+    .summary,
+    .meta {
+      padding-left: 6.25rem;
+    }
+  }
+</style>

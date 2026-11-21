@@ -1,0 +1,86 @@
+---
+import ExtLink from './ExtLink.astro';
+
+const path = Astro.url.pathname;
+const internal = [{ href: '/', label: 'index' }];
+const external = [
+  { href: 'https://status.ak3ph.si', label: 'status' },
+  { href: 'https://labs.ak3ph.dev', label: 'labs' },
+  { href: 'https://ak3ph.dev', label: 'ak3ph.dev' },
+  { href: 'https://github.com/ak3ph-labs', label: 'github' },
+];
+---
+
+<header class="site-header">
+  <div class="container bar">
+    <a class="brand mono" href="/"><span class="tilde">~/</span>ak3ph.si</a>
+    <nav aria-label="Main">
+      <ul class="mono">
+        {
+          internal.map((l) => (
+            <li>
+              <a href={l.href} aria-current={path === l.href ? 'page' : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+        {
+          external.map((l) => (
+            <li>
+              <ExtLink href={l.href}>
+                {l.label}
+                <span aria-hidden="true"> ↗</span>
+              </ExtLink>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    border-bottom: 1px solid var(--border);
+  }
+  .bar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.5rem 1.5rem;
+    padding-block: 1rem;
+  }
+  .brand {
+    color: var(--text);
+    font-weight: 600;
+  }
+  .brand:hover {
+    color: var(--text);
+    text-decoration: none;
+  }
+  .tilde {
+    color: var(--accent);
+  }
+  ul {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-size: 0.875rem;
+  }
+  li + li::before {
+    content: '·';
+    color: var(--muted);
+    padding-inline: 0.5rem;
+  }
+  nav a {
+    color: var(--muted);
+  }
+  nav a:hover,
+  nav a[aria-current='page'] {
+    color: var(--text);
+  }
+</style>
