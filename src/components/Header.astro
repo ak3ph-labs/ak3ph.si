@@ -2,7 +2,10 @@
 import ExtLink from './ExtLink.astro';
 
 const path = Astro.url.pathname;
-const internal = [{ href: '/', label: 'index' }];
+const internal = [
+  { href: '/', label: 'index' },
+  { href: '/how', label: 'how' },
+];
 const external = [
   { href: 'https://status.ak3ph.si', label: 'status' },
   { href: 'https://labs.ak3ph.dev', label: 'labs' },
@@ -19,7 +22,7 @@ const external = [
         {
           internal.map((l) => (
             <li>
-              <a href={l.href} aria-current={path === l.href ? 'page' : undefined}>
+              <a href={l.href} aria-current={path.replace(/\/$/, '') === l.href.replace(/\/$/, '') ? 'page' : undefined}>
                 {l.label}
               </a>
             </li>

@@ -23,10 +23,10 @@ Sibling sites (do not change them from this repo):
 
 - **Astro** (latest stable; labs is on v7.x, so match its patterns) with content collections and MDX, validated by a **Zod** schema. An invalid entry must fail the build.
 - **Static output** into `dist/`, served by **Caddy** on **Railway**. No server code, minimal client JS.
-- **Hosting:** Railway project `ak3ph-selfhosted`, service `index`, environment `production`. Every push to `main` deploys.
-- **Domain:** `ak3ph.si` (apex) on the service; `www.ak3ph.si` redirects to the apex in the Caddyfile. DNS on Cloudflare, records **not proxied** (grey cloud).
+- **Hosting:** Railway project `ak3ph-selfhosted`, service `ak3ph.si` (private hostname `index`), environment `production`, capped at 0.5 vCPU / 512 MB. Every push to `main` deploys.
+- **Domain:** `ak3ph.si` (apex) and `www.ak3ph.si` on the service; `www` redirects to the apex in the Caddyfile. DNS on Cloudflare, records **proxied** (orange cloud) with SSL/TLS mode **Full (strict)**. **Rocket Loader** and **Email Obfuscation** are off: both rewrite the HTML and inject scripts, which the site neither needs nor allows in its CSP.
 - **Dockerfile:** multi-stage (Node build, then `caddy:2-alpine`). If you use `--mount=type=cache`, Railway requires `id=s/<service id>-<path>`.
-- **GitHub stats** at build time via `GITHUB_TOKEN` (Railway variable, read-only, public repos). If the API fails, omit the stats and keep the build passing.
+- **GitHub stats** at build time via `GITHUB_TOKEN` (Railway variable, read-only, public repos; the Dockerfile takes it as a build `ARG` in the build stage only, so it never reaches the final image). Without a token the build calls the API anonymously. If the API fails, omit the stats and keep the build passing.
 - **Live status** from Uptime Kuma badges (`https://status.ak3ph.si/api/badge/<monitorId>/status`), loaded as images so the site stays static.
 
 ## Content model
@@ -57,6 +57,7 @@ One MDX file per entry in `src/content/entries/<slug>.mdx`.
 - `/`: three sections (Self-hosted, Projects, Contributions), each a dense list: status badge, title, URL, one-line summary, upstream/license.
 - `/p/<slug>`: write-up plus a metadata sidebar.
 - `/how`: the shared hosting pattern and the add-a-tool checklist, public-safe version.
+- `/404`: not-found page.
 - Nav: `index · how · status ↗ · labs ↗ · ak3ph.dev ↗ · github ↗`
 
 ## Design

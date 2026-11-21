@@ -15,6 +15,27 @@ tags: [monitoring, status-page]
 added: 2026-11-21
 ---
 
-Uptime Kuma checks each hosted tool and site every 60 seconds and publishes the results on the public status page "ak3ph status". It runs the official image, with its SQLite database on a volume.
+## What it is
 
-It has no monitor of its own on the status page, because it can't watch itself.
+[Uptime Kuma](https://github.com/louislam/uptime-kuma) is a self-hosted monitoring tool. It checks each tool and site every 60 seconds and publishes the results on the public status page "ak3ph status" at status.ak3ph.si. The status badges on this site come from it.
+
+## What it watches
+
+- draw.ak3ph.si (Excalidraw)
+- labs.ak3ph.dev
+- ak3ph.dev
+
+New tools get a monitor as part of the [add-a-tool checklist](/how#checklist).
+
+## How it runs
+
+- The official `louislam/uptime-kuma:2` image, unmodified. No fork.
+- One Railway service capped at 0.5 vCPU and 512 MB, behind Cloudflare.
+- Its SQLite database lives on a volume mounted at `/app/data`, so monitors and history survive redeploys.
+- The status page is public; the dashboard behind it needs a login.
+
+## Known limits
+
+- **It can't watch itself.** If Uptime Kuma is down, so is the status page, and there's no monitor for status.ak3ph.si on it. An external check is on the roadmap.
+- **One region.** Checks run from a single location, so they show whether a site is reachable from there, not from everywhere.
+- **Badges need the status page.** Uptime Kuma only serves badges for monitors on a public status page, so a monitor that isn't on the page shows no badge here.

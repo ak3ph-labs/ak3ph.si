@@ -12,16 +12,17 @@
 - [x] Base layout, header, nav, footer, design tokens (nav leaves out `how` until that page exists)
 - [x] Index with the Excalidraw (`monitorId: 1`) and Uptime Kuma entries (short bodies; Excalidraw is the first entry, moved here from labs)
 - [x] Dockerfile + Caddyfile (serve `dist/`, `www` → apex redirect)
-- [ ] Railway service `index` in `ak3ph-selfhosted`, capped at 0.5 vCPU / 512 MB, connected to `main`
-- [ ] Custom domains `ak3ph.si` and `www.ak3ph.si`; CNAME + TXT on Cloudflare (grey cloud); HTTPS valid
+- [x] Railway service in `ak3ph-selfhosted` (named `ak3ph.si`, private hostname `index`), capped at 0.5 vCPU / 512 MB, connected to `main`
+- [x] Custom domains `ak3ph.si` and `www.ak3ph.si`; CNAME + TXT on Cloudflare (now proxied, SSL Full (strict), Rocket Loader and Email Obfuscation off); HTTPS valid
 - [ ] Uptime Kuma monitor "Index (ak3ph.si)" added to the status page
 
 ## Milestone 2: pages and status
-- [ ] `/p/<slug>` with metadata sidebar
-- [ ] Full write-ups for Excalidraw and Uptime Kuma (public-safe, adapted from the self-hosting log)
-- [ ] Uptime Kuma status badges per entry
-- [ ] GitHub stats at build time for `repo` and `upstream`; `GITHUB_TOKEN` on Railway
-- [ ] `/how` page: hosting pattern and add-a-tool checklist; add `how` to the nav
+- [x] `/p/<slug>` with metadata sidebar
+- [x] Full write-ups for Excalidraw and Uptime Kuma (public-safe; written from docs/context.md and the live service setup)
+- [x] Uptime Kuma status badges per entry (index rows and entry pages)
+- [x] GitHub stats at build time for `repo` and `upstream` (stars on the index, stars/forks/last push on entry pages)
+- [ ] `GITHUB_TOKEN` on Railway (read-only, public repos). Until it is set the build calls the API anonymously, which shares a 60 requests/hour limit with other builds on the same IP, so stats may be left out
+- [x] `/how` page: hosting pattern and add-a-tool checklist; add `how` to the nav
 
 ## Milestone 3: open source
 - [ ] Seed own open-source projects (list in Inventory below)

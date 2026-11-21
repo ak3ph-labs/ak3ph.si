@@ -52,3 +52,5 @@ export function hostname(url: string): string {
   const u = new URL(url);
   return (u.host + u.pathname).replace(/\/$/, '');
 }
+
+export const github = (repo: string) => `https://github.com/${repo}`;

@@ -1,0 +1,128 @@
+---
+import Base from '../layouts/Base.astro';
+import ExtLink from '../components/ExtLink.astro';
+---
+
+<Base
+  title="How it runs"
+  description="The hosting pattern every tool on ak3ph.si follows, and the checklist for adding a new one."
+>
+  <header class="page-head">
+    <h1>How it runs</h1>
+    <p class="muted">
+      Every tool on <span class="mono">*.ak3ph.si</span> follows the same pattern, so each one is
+      cheap to run, easy to reason about and easy to remove.
+    </p>
+  </header>
+
+  <div class="prose">
+    <h2 id="pattern">The pattern</h2>
+    <ul>
+      <li>
+        <strong>One service per tool</strong> on <ExtLink href="https://railway.com">Railway</ExtLink>,
+        built from the official Docker image or from a fork's Dockerfile.
+      </li>
+      <li>
+        <strong>One subdomain per tool</strong>, named by what it does rather than what it's called:{' '}
+        <span class="mono">draw.ak3ph.si</span>, not <span class="mono">excalidraw.ak3ph.si</span>. If the
+        tool behind it changes, the URL doesn't have to.
+      </li>
+      <li>
+        <strong>A resource cap</strong> on every service (0.5 vCPU and 512 MB by default), so one tool
+        can't eat the budget of the others.
+      </li>
+      <li>
+        <strong>A volume for any data.</strong> Containers are disposable; anything that must survive a
+        redeploy lives on a mounted volume. Tools that keep everything in the browser get no volume.
+      </li>
+      <li>
+        <strong>DNS on Cloudflare</strong>: a CNAME to Railway plus a TXT record for domain
+        verification. Records are proxied, with SSL/TLS set to Full (strict) so traffic is encrypted
+        all the way to Railway, which holds its own certificate for each domain. Rocket Loader and Email
+        Obfuscation are off, because they rewrite pages the tools serve.
+      </li>
+      <li>
+        <strong>A monitor in Uptime Kuma</strong> for each tool, shown on the public{' '}
+        <ExtLink href="https://status.ak3ph.si">status page</ExtLink>. The badges on this site come from
+        there.
+      </li>
+      <li>
+        <strong>Forks live in <ExtLink href="https://github.com/ak3ph-labs">ak3ph-labs</ExtLink></strong>{' '}
+        and keep the upstream license and credit. A fork is only made when the tool needs changes; otherwise
+        the official image runs as-is.
+      </li>
+      <li>
+        <strong>An entry on this site</strong>: one MDX file with the upstream, license, what runs, where
+        data lives, and a write-up of what changed and what went wrong.
+      </li>
+    </ul>
+
+    <h2 id="checklist">Adding a tool</h2>
+    <ol class="checklist">
+      <li>
+        <strong>Pick it.</strong> Check the license, whether an official image exists, and whether it
+        needs changes. No changes means no fork.
+      </li>
+      <li>
+        <strong>Fork if needed</strong> into <span class="mono">ak3ph-labs</span>. Keep the LICENSE file
+        and upstream credit, and keep the changes small so upstream updates still merge.
+      </li>
+      <li>
+        <strong>Create the service</strong> from the image or the fork, set the resource cap, and mount a
+        volume at the tool's data path if it stores anything.
+      </li>
+      <li>
+        <strong>Add the custom domain</strong> <span class="mono">&lt;function&gt;.ak3ph.si</span> on the
+        service, then the CNAME and TXT records on Cloudflare (proxied). Wait until the certificate is
+        valid and the site loads over HTTPS.
+      </li>
+      <li>
+        <strong>Lock it down.</strong> Create the admin account straight away if the tool has one, and
+        turn off public sign-up if it isn't meant to be open.
+      </li>
+      <li>
+        <strong>Add a monitor</strong> in Uptime Kuma, put it on the public status page, and note its id.
+      </li>
+      <li>
+        <strong>Add the entry</strong> as <span class="mono">src/content/entries/&lt;slug&gt;.mdx</span>{' '}
+        with <span class="mono">monitorId</span> set. The build fails if a required field is missing.
+      </li>
+      <li>
+        <strong>Ship it</strong> through a pull request. Once it merges and deploys, check the live page
+        and that the badge shows the right status.
+      </li>
+    </ol>
+
+    <h2 id="this-site">This site</h2>
+    <p>
+      ak3ph.si itself is a static <ExtLink href="https://astro.build">Astro</ExtLink> site served by
+      Caddy on Railway, under the same pattern. GitHub stats are fetched once at build time, and status
+      badges load as images from the status page, so there is no server code and no client-side
+      JavaScript. The source is on <ExtLink href="https://github.com/ak3ph-labs/ak3ph.si">GitHub</ExtLink>.
+    </p>
+  </div>
+</Base>
+
+<style>
+  .page-head {
+    padding-block: 2.5rem 1.5rem;
+  }
+  h1 {
+    margin: 0;
+    font-size: 1.75rem;
+    line-height: 1.25;
+  }
+  .page-head p {
+    margin: 0.5rem 0 0;
+    max-width: 40rem;
+  }
+  .prose h2::before {
+    content: '## ';
+    color: var(--accent);
+    font-family: var(--font-mono);
+  }
+  .checklist li::marker {
+    color: var(--accent);
+    font-family: var(--font-mono);
+  }
+</style>

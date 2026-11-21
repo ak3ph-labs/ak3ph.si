@@ -1,19 +1,21 @@
 ---
 import ExtLink from './ExtLink.astro';
-import { hostname, type Entry } from '../lib/entries';
+import StatusBadge from './StatusBadge.astro';
+import { github, hostname, type Entry } from '../lib/entries';
+import { compact, repoStats } from '../lib/github';
 
 interface Props {
   entry: Entry;
 }
 
-const { data } = Astro.props.entry;
-const github = (repo: string) => `https://github.com/${repo}`;
+const { id, data } = Astro.props.entry;
+const upstreamStats = await repoStats(data.upstream ?? data.repo);
 ---
 
 <li class="row">
   <div class="head">
     <span class="status mono" data-status={data.status}>{data.status}</span>
-    <h3 class="title">{data.title}</h3>
+    <h3 class="title"><a href={`/p/${id}`}>{data.title}</a></h3>
     {
       data.url && (
         <ExtLink class="host mono" href={data.url}>
@@ -21,6 +23,7 @@ const github = (repo: string) => `https://github.com/${repo}`;
         </ExtLink>
       )
     }
+    {data.monitorId && <StatusBadge monitorId={data.monitorId} name={data.title} />}
   </div>
   <p class="summary">{data.summary}</p>
   <p class="meta mono">
@@ -40,6 +43,15 @@ const github = (repo: string) => `https://github.com/${repo}`;
       )
     }
     {data.license && <span>{data.license}</span>}
+    {
+      upstreamStats && (
+        <span>
+          <span aria-hidden="true">★ </span>
+          {compact(upstreamStats.stars)}
+          <span class="sr-only"> stars on GitHub</span>
+        </span>
+      )
+    }
   </p>
 </li>
 
@@ -71,6 +83,12 @@ const github = (repo: string) => `https://github.com/${repo}`;
     margin: 0;
     font-size: 1rem;
     font-weight: 600;
+  }
+  .title a {
+    color: var(--text);
+  }
+  .title a:hover {
+    color: var(--accent-hover);
   }
   .host {
     font-size: 0.875rem;

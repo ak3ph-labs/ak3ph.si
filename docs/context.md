@@ -15,7 +15,7 @@ ak3ph.si is where everything open source from ak3ph lives in one place: the tool
 - **Railway:** Pro plan, workspace `ak3ph`.
   - `ak3ph-selfhosted`: self-hosted tools and this index site.
   - `ak3ph-oss` (later): Yash's own open-source projects that need hosting, so their cost stays separate.
-- **Pattern for every hosted tool:** one Railway service, one `<function>.ak3ph.si` subdomain (named by function, not product), a resource cap, a volume for any data, CNAME and TXT records on Cloudflare with the proxy off, and a monitor in Uptime Kuma.
+- **Pattern for every hosted tool:** one Railway service, one `<function>.ak3ph.si` subdomain (named by function, not product), a resource cap, a volume for any data, CNAME and TXT records on Cloudflare (proxied, SSL Full (strict), Rocket Loader and Email Obfuscation off), and a monitor in Uptime Kuma.
 - **Forks** live in the `ak3ph-labs` GitHub org and keep the upstream LICENSE and credit.
 
 ## Currently hosted

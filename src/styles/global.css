@@ -114,3 +114,37 @@ pre {
 .skip-link:focus {
   top: 1rem;
 }
+
+/* Long-form text: entry write-ups and /how. */
+.prose {
+  max-width: 40rem;
+}
+.prose h2 {
+  margin: 2rem 0 0.5rem;
+  font-size: 1.125rem;
+}
+.prose h2:first-child {
+  margin-top: 0;
+}
+.prose h3 {
+  margin: 1.5rem 0 0.5rem;
+  font-size: 1rem;
+}
+.prose p,
+.prose ul,
+.prose ol {
+  margin: 0 0 1rem;
+}
+.prose li + li {
+  margin-top: 0.25rem;
+}
+.prose code {
+  padding: 0.1em 0.35em;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+}
+.prose a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
