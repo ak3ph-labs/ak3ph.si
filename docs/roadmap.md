@@ -21,7 +21,7 @@
 - [x] Full write-ups for Excalidraw and Uptime Kuma (public-safe; written from docs/context.md and the live service setup)
 - [x] Uptime Kuma status badges per entry (index rows and entry pages)
 - [x] GitHub stats at build time for `repo` and `upstream` (stars on the index, stars/forks/last push on entry pages)
-- [ ] `GITHUB_TOKEN` on Railway (read-only, public repos). Until it's set the build calls the API anonymously, which works within the 60 requests/hour limit
+- [ ] `GITHUB_TOKEN` on Railway (read-only, public repos). Until it is set the build calls the API anonymously, which shares a 60 requests/hour limit with other builds on the same IP, so stats may be left out
 - [x] `/how` page: hosting pattern and add-a-tool checklist; add `how` to the nav
 
 ## Milestone 3: open source
