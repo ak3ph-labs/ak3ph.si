@@ -1,0 +1,49 @@
+---
+import ExtLink from './ExtLink.astro';
+
+interface Props {
+  monitorId: number;
+  /** Tool name, used in the alt text. */
+  name: string;
+}
+
+const { monitorId, name } = Astro.props;
+
+// Colours match the reserved status tokens in global.css.
+const params = new URLSearchParams({
+  style: 'flat-square',
+  labelColor: '12151A',
+  upColor: '4ADE80',
+  pendingColor: 'FBBF24',
+  downColor: 'F87171',
+  maintenanceColor: '60A5FA',
+});
+const src = `https://status.ak3ph.si/api/badge/${monitorId}/status?${params}`;
+---
+
+<ExtLink class="badge" href="https://status.ak3ph.si" title={`${name} on status.ak3ph.si`}>
+  <img
+    src={src}
+    alt={`Live status of ${name}, from status.ak3ph.si`}
+    height="20"
+    loading="lazy"
+    decoding="async"
+    referrerpolicy="no-referrer"
+  />
+</ExtLink>
+
+<style>
+  .badge {
+    display: inline-flex;
+    line-height: 0;
+    vertical-align: middle;
+  }
+  .badge:hover {
+    text-decoration: none;
+  }
+  img {
+    height: 20px;
+    width: auto;
+    border-radius: 2px;
+  }
+</style>

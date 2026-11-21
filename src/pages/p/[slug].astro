@@ -1,0 +1,295 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ExtLink from '../../components/ExtLink.astro';
+import StatusBadge from '../../components/StatusBadge.astro';
+import MdxLink from '../../components/MdxLink.astro';
+import { github, hostname, sections, type Entry } from '../../lib/entries';
+import { compact, repoStats, type RepoStats } from '../../lib/github';
+
+export async function getStaticPaths() {
+  const entries = await getCollection('entries');
+  return entries.map((entry) => ({ params: { slug: entry.id }, props: { entry } }));
+}
+
+interface Props {
+  entry: Entry;
+}
+
+const { entry } = Astro.props;
+const { data } = entry;
+const { Content } = await render(entry);
+
+const section = sections.find((s) => s.kind === data.kind)!;
+const isFork = Boolean(data.repo && data.upstream && data.repo !== data.upstream);
+
+const [repoInfo, upstreamInfo] = await Promise.all([
+  repoStats(data.repo),
+  data.upstream !== data.repo ? repoStats(data.upstream) : Promise.resolve(null),
+]);
+
+const day = (d: Date) => d.toISOString().slice(0, 10);
+const statsLine = (s: RepoStats) =>
+  `★ ${compact(s.stars)} · ${compact(s.forks)} forks · pushed ${day(s.pushedAt)}`;
+const statsLabel = (s: RepoStats) =>
+  `${s.stars} stars, ${s.forks} forks, last push ${day(s.pushedAt)}`;
+---
+
+<Base title={data.title} description={data.summary}>
+  <nav class="crumbs mono" aria-label="Breadcrumb">
+    <a href="/">index</a>
+    <span aria-hidden="true">/</span>
+    <a href={`/#${section.id}`}>{section.title.toLowerCase()}</a>
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">{entry.id}</span>
+  </nav>
+
+  <header class="entry-head">
+    <h1>{data.title}</h1>
+    <p class="summary">{data.summary}</p>
+    <p class="head-meta mono">
+      <span class="status" data-status={data.status}>{data.status}</span>
+      {data.url && <ExtLink href={data.url}>{hostname(data.url)}</ExtLink>}
+      {data.monitorId && <StatusBadge monitorId={data.monitorId} name={data.title} />}
+    </p>
+  </header>
+
+  <div class="layout">
+    <article class="prose">
+      <Content components={{ a: MdxLink }} />
+    </article>
+
+    <aside class="meta" aria-labelledby="meta-title">
+      <h2 id="meta-title" class="mono">metadata</h2>
+      <dl class="mono">
+        <dt>kind</dt>
+        <dd>{data.kind}</dd>
+        <dt>category</dt>
+        <dd>{data.category}</dd>
+        {
+          data.url && (
+            <>
+              <dt>url</dt>
+              <dd>
+                <ExtLink href={data.url}>{hostname(data.url)}</ExtLink>
+              </dd>
+            </>
+          )
+        }
+        {
+          data.upstream && (
+            <>
+              <dt>upstream</dt>
+              <dd>
+                <ExtLink href={github(data.upstream)}>{data.upstream}</ExtLink>
+                {upstreamInfo && (
+                  <span class="stats" aria-label={statsLabel(upstreamInfo)}>
+                    {statsLine(upstreamInfo)}
+                  </span>
+                )}
+              </dd>
+            </>
+          )
+        }
+        {
+          data.repo && data.repo !== data.upstream && (
+            <>
+              <dt>{isFork ? 'fork' : 'repo'}</dt>
+              <dd>
+                <ExtLink href={github(data.repo)}>{data.repo}</ExtLink>
+                {repoInfo && (
+                  <span class="stats" aria-label={statsLabel(repoInfo)}>
+                    {statsLine(repoInfo)}
+                  </span>
+                )}
+              </dd>
+            </>
+          )
+        }
+        {
+          data.license && (
+            <>
+              <dt>license</dt>
+              <dd>{data.license}</dd>
+            </>
+          )
+        }
+        {
+          data.source && (
+            <>
+              <dt>source</dt>
+              <dd>{data.source}</dd>
+            </>
+          )
+        }
+        {
+          data.hosting && (
+            <>
+              <dt>hosting</dt>
+              <dd>{data.hosting}</dd>
+            </>
+          )
+        }
+        {
+          data.data && (
+            <>
+              <dt>data</dt>
+              <dd>{data.data}</dd>
+            </>
+          )
+        }
+        {
+          data.access && (
+            <>
+              <dt>access</dt>
+              <dd>{data.access}</dd>
+            </>
+          )
+        }
+        {
+          data.prs && data.prs.length > 0 && (
+            <>
+              <dt>prs</dt>
+              <dd>
+                <ul class="plain">
+                  {data.prs.map((pr) => (
+                    <li>
+                      <ExtLink href={pr}>{pr.replace(/^https:\/\/github\.com\//, '')}</ExtLink>
+                    </li>
+                  ))}
+                </ul>
+              </dd>
+            </>
+          )
+        }
+        {
+          data.tags.length > 0 && (
+            <>
+              <dt>tags</dt>
+              <dd>{data.tags.join(', ')}</dd>
+            </>
+          )
+        }
+        <dt>added</dt>
+        <dd><time datetime={day(data.added)}>{day(data.added)}</time></dd>
+        {
+          data.updated && (
+            <>
+              <dt>updated</dt>
+              <dd>
+                <time datetime={day(data.updated)}>{day(data.updated)}</time>
+              </dd>
+            </>
+          )
+        }
+      </dl>
+    </aside>
+  </div>
+</Base>
+
+<style>
+  .crumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    padding-top: 1.5rem;
+    font-size: 0.8125rem;
+    color: var(--muted);
+  }
+  .crumbs a {
+    color: var(--muted);
+  }
+  .crumbs a:hover {
+    color: var(--accent-hover);
+  }
+  .entry-head {
+    padding-block: 1rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+  h1 {
+    margin: 0;
+    font-size: 1.75rem;
+    line-height: 1.25;
+  }
+  .summary {
+    margin: 0.5rem 0 0;
+    max-width: 40rem;
+    color: var(--muted);
+  }
+  .head-meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.5rem 1rem;
+    margin: 0.75rem 0 0;
+    font-size: 0.875rem;
+  }
+  .status {
+    color: var(--muted);
+    font-size: 0.75rem;
+  }
+  .status::before {
+    content: '[';
+  }
+  .status::after {
+    content: ']';
+  }
+
+  .layout {
+    display: grid;
+    gap: 2rem;
+    padding-top: 1.5rem;
+  }
+  @media (min-width: 48rem) {
+    .layout {
+      grid-template-columns: minmax(0, 1fr) 17rem;
+      align-items: start;
+    }
+    .meta {
+      position: sticky;
+      top: 1rem;
+    }
+  }
+
+  .meta {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1rem;
+  }
+  .meta h2 {
+    margin: 0 0 0.75rem;
+    font-size: 0.8125rem;
+    font-weight: 600;
+  }
+  .meta h2::before {
+    content: '## ';
+    color: var(--accent);
+  }
+  dl {
+    margin: 0;
+    font-size: 0.8125rem;
+  }
+  dt {
+    color: var(--muted);
+    margin-top: 0.625rem;
+  }
+  dt:first-of-type {
+    margin-top: 0;
+  }
+  dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+  }
+  .stats {
+    display: block;
+    color: var(--muted);
+    font-size: 0.75rem;
+  }
+  .plain {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+</style>
