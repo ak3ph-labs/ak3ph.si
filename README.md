@@ -17,6 +17,8 @@ npm run build   # static output in dist/; fails on an invalid entry
 npm run check   # type check
 ```
 
+GitHub stats are fetched at build time. Set `GITHUB_TOKEN` (read-only, public repos) to avoid the anonymous rate limit; if the API can't be reached the stats are left out and the build still passes.
+
 ## License
 
 Site code is MIT-licensed (see `LICENSE`). Each listed tool keeps its own license; see its entry.

@@ -17,11 +17,12 @@
 - [ ] Uptime Kuma monitor "Index (ak3ph.si)" added to the status page
 
 ## Milestone 2: pages and status
-- [ ] `/p/<slug>` with metadata sidebar
-- [ ] Full write-ups for Excalidraw and Uptime Kuma (public-safe, adapted from the self-hosting log)
-- [ ] Uptime Kuma status badges per entry
-- [ ] GitHub stats at build time for `repo` and `upstream`; `GITHUB_TOKEN` on Railway
-- [ ] `/how` page: hosting pattern and add-a-tool checklist; add `how` to the nav
+- [x] `/p/<slug>` with metadata sidebar
+- [x] Full write-ups for Excalidraw and Uptime Kuma (public-safe; written from docs/context.md and the live service setup)
+- [x] Uptime Kuma status badges per entry (index rows and entry pages)
+- [x] GitHub stats at build time for `repo` and `upstream` (stars on the index, stars/forks/last push on entry pages)
+- [ ] `GITHUB_TOKEN` on Railway (read-only, public repos). Until it's set the build calls the API anonymously, which works within the 60 requests/hour limit
+- [x] `/how` page: hosting pattern and add-a-tool checklist; add `how` to the nav
 
 ## Milestone 3: open source
 - [ ] Seed own open-source projects (list in Inventory below)
