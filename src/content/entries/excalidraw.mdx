@@ -17,8 +17,29 @@ tags: [whiteboard, diagrams, fork]
 added: 2026-11-21
 ---
 
-Excalidraw is an open-source virtual whiteboard with a hand-drawn look. This instance runs from a fork in `ak3ph-labs` that keeps the upstream license and credit. The fork is rebranded and the Excalidraw+ promotions are removed; everything else follows upstream.
+## What it is
 
-Drawings stay in your browser. Live collaboration and share links still go through Excalidraw's public servers.
+[Excalidraw](https://excalidraw.com) is an open-source virtual whiteboard with a hand-drawn look, good for quick sketches, architecture diagrams and wireframes. This instance is at draw.ak3ph.si and is open to anyone, with no account.
 
-It used to be listed on labs.ak3ph.dev and now lives here.
+It used to be listed on [labs.ak3ph.dev](https://labs.ak3ph.dev) and moved here when ak3ph.si became the home for self-hosted tools.
+
+## What changed in the fork
+
+The fork in [`ak3ph-labs/excalidraw`](https://github.com/ak3ph-labs/excalidraw) keeps the upstream MIT license and credit. It changes two things:
+
+- **Branding**: the app is rebranded for draw.ak3ph.si.
+- **Excalidraw+ promotions removed**: the upsell links and banners for the paid product are gone.
+
+Everything else follows upstream, and the changes are kept small so upstream updates still merge cleanly.
+
+## How it runs
+
+- Built from the fork's `master` branch with a Railway-specific Dockerfile: a Node build stage, then nginx serving the static app.
+- One Railway service capped at 0.5 vCPU and 512 MB, behind Cloudflare.
+- No volume and no database. Drawings are saved in your browser's local storage, so they stay on your device.
+
+## Known limits
+
+- **Collaboration and share links use Excalidraw's public servers.** Live collaboration rooms and "shareable link" exports go through the upstream collaboration and storage services, not through ak3ph.si. Content is end-to-end encrypted by Excalidraw, but those servers are run by the Excalidraw team, not here.
+- **Clearing site data deletes drawings.** Since nothing is stored server-side, export anything you want to keep (`.excalidraw` or PNG/SVG).
+- **Upstream changes arrive when the fork is synced**, not automatically.
