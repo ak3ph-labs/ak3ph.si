@@ -1,0 +1,42 @@
+# Static server for ak3ph.si on Railway.
+# Railway terminates TLS and forwards plain HTTP to $PORT.
+{
+	admin off
+	auto_https off
+	persist_config off
+	servers {
+		trusted_proxies static private_ranges
+	}
+}
+
+:{$PORT:8080} {
+	# www.ak3ph.si -> ak3ph.si
+	@www host www.ak3ph.si
+	redir @www https://ak3ph.si{uri} permanent
+
+	root * /srv
+	encode zstd gzip
+
+	header {
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		Permissions-Policy "camera=(), microphone=(), geolocation=()"
+		Content-Security-Policy "default-src 'self'; img-src 'self' https://status.ak3ph.si data:; style-src 'self' 'unsafe-inline'; script-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'"
+		-Server
+	}
+
+	# Hashed build assets never change.
+	@assets path /_astro/*
+	header @assets Cache-Control "public, max-age=31536000, immutable"
+
+	@html path / *.html */
+	header @html Cache-Control "public, max-age=0, must-revalidate"
+
+	try_files {path} {path}.html
+	file_server
+
+	handle_errors 404 {
+		rewrite * /404.html
+		file_server
+	}
+}

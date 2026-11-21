@@ -1,0 +1,96 @@
+---
+import Base from '../layouts/Base.astro';
+import EntryRow from '../components/EntryRow.astro';
+import { entriesByKind, sections } from '../lib/entries';
+
+const grouped = await entriesByKind();
+---
+
+<Base>
+  <section class="intro">
+    <h1>Open source and self-hosted</h1>
+    <p class="muted">
+      Everything open source I run or put out: tools hosted on <span class="mono"
+        >*.ak3ph.si</span
+      >, my own projects, and contributions to other people's.
+    </p>
+  </section>
+
+  {
+    sections.map((s) => (
+      <section class="group" aria-labelledby={s.id}>
+        <div class="group-head">
+          <h2 id={s.id} class="mono">
+            {s.title}
+            <span class="count">{grouped[s.kind].length}</span>
+          </h2>
+          <p class="muted">{s.blurb}</p>
+        </div>
+        {grouped[s.kind].length > 0 ? (
+          <ul class="list">
+            {grouped[s.kind].map((entry) => (
+              <EntryRow entry={entry} />
+            ))}
+          </ul>
+        ) : (
+          <p class="empty mono">Nothing listed yet.</p>
+        )}
+      </section>
+    ))
+  }
+</Base>
+
+<style>
+  .intro {
+    padding-block: 2.5rem 1rem;
+  }
+  h1 {
+    margin: 0;
+    font-size: 1.75rem;
+    line-height: 1.25;
+  }
+  .intro p {
+    margin: 0.5rem 0 0;
+    max-width: 40rem;
+  }
+  .group {
+    margin-top: 2.5rem;
+  }
+  .group-head {
+    margin-bottom: 0.75rem;
+  }
+  h2 {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-transform: lowercase;
+    letter-spacing: 0.02em;
+  }
+  h2::before {
+    content: '## ';
+    color: var(--accent);
+  }
+  .count {
+    margin-left: 0.5rem;
+    color: var(--muted);
+    font-weight: 400;
+  }
+  .group-head p {
+    margin: 0.25rem 0 0;
+    font-size: 0.875rem;
+  }
+  .list,
+  .empty {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .empty {
+    padding: 0.875rem 1rem;
+    font-size: 0.8125rem;
+    color: var(--muted);
+  }
+</style>
