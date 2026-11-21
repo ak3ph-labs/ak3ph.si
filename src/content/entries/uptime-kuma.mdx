@@ -1,0 +1,20 @@
+---
+title: Uptime Kuma
+summary: Self-hosted uptime monitoring and the public status page for everything on ak3ph.si.
+kind: self-hosted
+status: live
+category: monitoring
+url: https://status.ak3ph.si
+upstream: louislam/uptime-kuma
+license: MIT
+source: louislam/uptime-kuma:2
+hosting: Railway · Docker
+data: volume (SQLite)
+access: public page + login
+tags: [monitoring, status-page]
+added: 2026-11-21
+---
+
+Uptime Kuma checks each hosted tool and site every 60 seconds and publishes the results on the public status page "ak3ph status". It runs the official image, with its SQLite database on a volume.
+
+It has no monitor of its own on the status page, because it can't watch itself.
